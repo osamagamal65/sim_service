@@ -4,15 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.app.Activity;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.content.Intent;
-import android.net.Uri;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,7 +81,7 @@ public class SimServicePlugin  implements MethodCallHandler {
             try {
                 // TelephonyManager.getPhoneCount() requires API 23
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    phoneCount = manager.getPhoneCount();
+                    phoneCount = manager != null ? manager.getPhoneCount() : 0;
                 }
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -91,8 +89,8 @@ public class SimServicePlugin  implements MethodCallHandler {
 
 
                     SubscriptionManager subscriptionManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-                    activeSubscriptionInfoCount = subscriptionManager.getActiveSubscriptionInfoCount();
-                    activeSubscriptionInfoCountMax = subscriptionManager.getActiveSubscriptionInfoCountMax();
+                    activeSubscriptionInfoCount = subscriptionManager != null ? subscriptionManager.getActiveSubscriptionInfoCount() : 0;
+                    activeSubscriptionInfoCountMax = subscriptionManager != null ? subscriptionManager.getActiveSubscriptionInfoCountMax() : 0;
 
                     sims = new JSONArray();
 
@@ -147,20 +145,20 @@ public class SimServicePlugin  implements MethodCallHandler {
             }
 
             String phoneNumber = null;
-            String countryCode = manager.getSimCountryIso();
-            String simOperator = manager.getSimOperator();
-            String carrierName = manager.getSimOperatorName();
+            String countryCode = manager != null ? manager.getSimCountryIso() : null;
+            String simOperator = manager != null ? manager.getSimOperator() : null;
+            String carrierName = manager != null ? manager.getSimOperatorName() : null;
 
             String deviceId = null;
             String deviceSoftwareVersion = null;
             String simSerialNumber = null;
             String subscriberId = null;
 
-            int callState = manager.getCallState();
-            int dataActivity = manager.getDataActivity();
-            int networkType = manager.getNetworkType();
-            int phoneType = manager.getPhoneType();
-            int simState = manager.getSimState();
+            int callState = manager != null ? manager.getCallState() : 0;
+            int dataActivity = manager != null ? manager.getDataActivity() : 0;
+            int networkType = manager != null ? manager.getNetworkType() : 0;
+            int phoneType = manager != null ? manager.getPhoneType() : 0;
+            int simState = manager != null ? manager.getSimState() : 0;
 
             boolean isNetworkRoaming = manager.isNetworkRoaming();
 

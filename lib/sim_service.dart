@@ -7,7 +7,7 @@ class SimService {
   static Future<SimData> get getSimData async {
     dynamic simData = await _channel.invokeMethod('getSimData');
     print(simData);
-    var data = JSON.decode(simData);
+    var data = json.decode(simData);
     List<SimCard> simCards = <SimCard>[];
     for (var card in data['cards']) {
       simCards.add(SimCard(
