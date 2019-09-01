@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:sim_service/sim_service.dart';
+import 'package:sim_service/models/sim_data.dart';
 
 void main() async {
   runApp(new MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   SimData _simData;
-
+  bool gettingData = false;
   @override
   void initState() {
     super.initState();
@@ -28,6 +29,9 @@ class _MyAppState extends State<MyApp> {
 
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
+      setState(() {
+        gettingData = true; 
+      });
       simData = await SimService.getSimData;
     } on PlatformException {
       print(simData);
@@ -39,6 +43,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
+      gettingData = false;
       _simData = simData;
     });
   }
@@ -52,25 +57,32 @@ class _MyAppState extends State<MyApp> {
             ),
             body: Column(
               children: <Widget>[
-                Text('the main sim card is ${_simData.carrierName}'),
                 Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Column(
-                    children: _simData.cards.map((SimCard card) {
+                    children: _simData != null && _simData.cards is List && _simData.cards.length > 0 ? _simData.cards.map((SimCard card) {
                       return Container(
                         child: Center(
                           child: Column(
                             children: <Widget>[
-                              Text(card.carrierName),
-                              Text(card.displayName),
-                              Text(card.countryCode),
-                              Text(card.deviceId),
+                              Text('the main sim card is ${_simData.carrierName}'),
+                              Text(card.carrierName.toString()),
+                              Text(card.displayName.toString()),
+                              Text(card.countryCode.toString()),
+                              Text(card.deviceId.toString()),
                               Text('data roaming is ${card.isDataRoaming}')
                             ],
                           ),
                         ),
                       );
-                    }).toList(),
+                    }).toList() : gettingData ? [
+                      Center(child: CircularProgressIndicator(),
+                      )
+                    ] : [
+                      Center(
+                        child: Text('faild to laod data'),
+                      )
+                    ],
                   ),
                 )
               ],
