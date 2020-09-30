@@ -240,10 +240,10 @@ public class SimServicePlugin  implements MethodCallHandler {
         ActivityCompat.requestPermissions(activity, perm, 0);
     }
     private boolean checkPermission(String permission) {
-        Activity activity = mRegistrar.activity();
+        Context context = mRegistrar.context();
         permission = getManifestPermission(permission);
         Log.i("SimplePermission", "Checking permission : " + permission);
-        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(activity, permission);
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, permission);
     }
 
 
